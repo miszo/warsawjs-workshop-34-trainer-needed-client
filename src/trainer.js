@@ -9,6 +9,10 @@ export function connectAsTrainer() {
     ui.showMessage('Connected!');
   });
 
+  data.webSocket.addEventListener('close', function() {
+    ui.showMessage('Disconnected...');
+  });
+
   ui.showMessage('Connecting...');
 }
 
