@@ -20,6 +20,7 @@ function connectAsStudent() {
 
   data.webSocket.addEventListener('open', function() {
     ui.showMessage('Connected!');
+    data.webSocket.send(JSON.stringify({ type: 'identification', role: data.role, identification: data.identification }));
   });
 
   data.webSocket.addEventListener('close', function() {
