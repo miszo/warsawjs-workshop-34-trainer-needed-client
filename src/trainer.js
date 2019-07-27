@@ -39,6 +39,9 @@ const trainerRoleWebSocketMessageHandlers = {
     ui.showMessage(`Student "${message.studentIdentification}" requested help!`);
     ui.showTrainerPanel();
   },
+  'help-request-cancellation': function() {
+    waitForHelpRequests();
+  },
   'help-provided': function() {
     waitForHelpRequests();
   },
