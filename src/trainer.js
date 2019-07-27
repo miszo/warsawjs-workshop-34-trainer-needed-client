@@ -10,7 +10,13 @@ export function connectAsTrainer() {
     ui.showMessage('Waiting for help requests...');
   });
 
+  data.webSocket.addEventListener('message', function(event) {
+    const message = JSON.parse(event.data);
+    (trainerRoleWebSocketMessageHandlers[message.type] || function() {})(message);
+  });
+
   data.webSocket.addEventListener('close', function() {
+    ui.hideTrainerPanel();
     ui.showMessage('Disconnected...');
   });
 
@@ -20,6 +26,13 @@ export function connectAsTrainer() {
 function sendNotificationThatHelpWasProvided() {
   // TODO
 }
+
+const trainerRoleWebSocketMessageHandlers = {
+  'help-request': function(message) {
+    ui.showMessage(`Student "${message.studentIdentification}" requested help!`);
+    ui.showTrainerPanel();
+  },
+};
 
 export function initializeTrainerPart() {
   ui.addEventListener('#help-provided-button', 'click', sendNotificationThatHelpWasProvided);
