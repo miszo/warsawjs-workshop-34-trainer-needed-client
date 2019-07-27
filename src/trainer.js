@@ -7,7 +7,7 @@ export function connectAsTrainer() {
 
   data.webSocket.addEventListener('open', function() {
     data.webSocket.send(JSON.stringify({ type: 'identification', role: data.role, identification: data.identification }));
-    ui.showMessage('Waiting for help requests...');
+    waitForHelpRequests();
   });
 
   data.webSocket.addEventListener('message', function(event) {
@@ -23,6 +23,11 @@ export function connectAsTrainer() {
   ui.showMessage('Connecting...');
 }
 
+function waitForHelpRequests() {
+  ui.hideTrainerPanel();
+  ui.showMessage('Waiting for help requests...');
+}
+
 function sendNotificationThatHelpWasProvided() {
   data.webSocket.send(JSON.stringify({ type: 'help-provided' }));
   ui.hideTrainerPanel();
@@ -33,6 +38,9 @@ const trainerRoleWebSocketMessageHandlers = {
   'help-request': function(message) {
     ui.showMessage(`Student "${message.studentIdentification}" requested help!`);
     ui.showTrainerPanel();
+  },
+  'help-provided': function() {
+    waitForHelpRequests();
   },
 };
 

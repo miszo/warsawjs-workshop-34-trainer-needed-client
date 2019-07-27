@@ -50,6 +50,10 @@ const studentRoleWebSocketMessageHandlers = {
   'trainer-assigned': function() {
     ui.showMessage('A trainer will approach you in a second...');
   },
+  'help-provided': function() {
+    ui.hideMessage();
+    ui.showStudentPanel();
+  },
 };
 
 export function initializeStudentPart() {
