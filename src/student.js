@@ -24,6 +24,11 @@ function connectAsStudent() {
     ui.showStudentPanel();
   });
 
+  data.webSocket.addEventListener('message', function(event) {
+    const message = JSON.parse(event.data);
+    (studentRoleWebSocketMessageHandlers[message.type] || function() {})(message);
+  });
+
   data.webSocket.addEventListener('close', function() {
     ui.hideStudentPanel();
     ui.showMessage('Disconnected...');
@@ -37,6 +42,12 @@ function sendHelpRequest() {
   ui.hideStudentPanel();
   ui.showMessage('Sent help request...');
 }
+
+const studentRoleWebSocketMessageHandlers = {
+  'trainer-assigned': function() {
+    ui.showMessage('A trainer will approach you in a second...');
+  },
+};
 
 export function initializeStudentPart() {
   ui.addEventListener('#student-identification-input', 'keyup',  handleStudentIdentificationInputChange);
