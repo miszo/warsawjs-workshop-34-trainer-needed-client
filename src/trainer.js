@@ -24,7 +24,9 @@ export function connectAsTrainer() {
 }
 
 function sendNotificationThatHelpWasProvided() {
-  // TODO
+  data.webSocket.send(JSON.stringify({ type: 'help-provided' }));
+  ui.hideTrainerPanel();
+  ui.showMessage('Sent confirmation...');
 }
 
 const trainerRoleWebSocketMessageHandlers = {
