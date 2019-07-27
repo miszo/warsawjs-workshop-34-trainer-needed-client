@@ -1,21 +1,30 @@
+import socketIO from 'socket.io-client';
 import { WEB_SOCKET_PORT } from './consts';
 import data from './data';
 import * as ui from './ui';
 
 export function connectAsTrainer() {
-  data.webSocket = new WebSocket(`ws://localhost:${WEB_SOCKET_PORT}`);
+  data.webSocket = socketIO.connect(`ws://localhost:${WEB_SOCKET_PORT}`);
 
-  data.webSocket.addEventListener('open', function() {
-    data.webSocket.send(JSON.stringify({ type: 'identification', role: data.role, identification: data.identification }));
+  data.webSocket.on('connect', function() {
+    data.webSocket.emit('identification', { role: data.role, identification: data.identification });
     waitForHelpRequests();
   });
 
-  data.webSocket.addEventListener('message', function(event) {
-    const message = JSON.parse(event.data);
-    (trainerRoleWebSocketMessageHandlers[message.type] || function() {})(message);
+  data.webSocket.on('help-request', function(message) {
+    ui.showMessage(`Student "${message.studentIdentification}" requested help!`);
+    ui.showTrainerPanel();
   });
 
-  data.webSocket.addEventListener('close', function() {
+  data.webSocket.on('help-request-cancellation', function() {
+    waitForHelpRequests();
+  });
+
+  data.webSocket.on('help-provided', function() {
+    waitForHelpRequests();
+  });
+
+  data.webSocket.on('disconnect', function() {
     ui.hideTrainerPanel();
     ui.showMessage('Disconnected...');
   });
@@ -29,23 +38,10 @@ function waitForHelpRequests() {
 }
 
 function sendNotificationThatHelpWasProvided() {
-  data.webSocket.send(JSON.stringify({ type: 'help-provided' }));
+  data.webSocket.emit('help-provided');
   ui.hideTrainerPanel();
   ui.showMessage('Sent confirmation...');
 }
-
-const trainerRoleWebSocketMessageHandlers = {
-  'help-request': function(message) {
-    ui.showMessage(`Student "${message.studentIdentification}" requested help!`);
-    ui.showTrainerPanel();
-  },
-  'help-request-cancellation': function() {
-    waitForHelpRequests();
-  },
-  'help-provided': function() {
-    waitForHelpRequests();
-  },
-};
 
 export function initializeTrainerPart() {
   ui.addEventListener('#help-provided-button', 'click', sendNotificationThatHelpWasProvided);
