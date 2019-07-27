@@ -38,6 +38,11 @@ function connectAsStudent() {
     ui.showStudentPanel();
   });
 
+  data.webSocket.on('reconnecting', function() {
+    ui.hideStudentPanel();
+    ui.showMessage('Reconnecting...');
+  });
+
   data.webSocket.on('disconnect', function() {
     ui.hideStudentPanel();
     ui.showMessage('Disconnected...');

@@ -24,6 +24,11 @@ export function connectAsTrainer() {
     waitForHelpRequests();
   });
 
+  data.webSocket.on('reconnecting', function() {
+    ui.hideTrainerPanel();
+    ui.showMessage('Reconnecting...');
+  });
+
   data.webSocket.on('disconnect', function() {
     ui.hideTrainerPanel();
     ui.showMessage('Disconnected...');
