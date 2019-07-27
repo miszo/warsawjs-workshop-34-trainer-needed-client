@@ -33,7 +33,9 @@ function connectAsStudent() {
 }
 
 function sendHelpRequest() {
-  // TODO
+  data.webSocket.send(JSON.stringify({ type: 'help-request' }));
+  ui.hideStudentPanel();
+  ui.showMessage('Sent help request...');
 }
 
 export function initializeStudentPart() {
