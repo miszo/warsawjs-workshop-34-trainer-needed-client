@@ -19,11 +19,13 @@ function connectAsStudent() {
   data.webSocket = new WebSocket(`ws://localhost:${WEB_SOCKET_PORT}`);
 
   data.webSocket.addEventListener('open', function() {
-    ui.showMessage('Connected!');
     data.webSocket.send(JSON.stringify({ type: 'identification', role: data.role, identification: data.identification }));
+    ui.hideMessage();
+    ui.showStudentPanel();
   });
 
   data.webSocket.addEventListener('close', function() {
+    ui.hideStudentPanel();
     ui.showMessage('Disconnected...');
   });
 
