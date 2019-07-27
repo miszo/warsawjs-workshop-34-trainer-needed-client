@@ -44,6 +44,9 @@ function sendHelpRequest() {
 }
 
 const studentRoleWebSocketMessageHandlers = {
+  'position-in-waiting-queue': function(message) {
+    ui.showMessage(`All trainers are busy at the moment, your position in the waiting queue: ${message.positionInWaitingQueue}`);
+  },
   'trainer-assigned': function() {
     ui.showMessage('A trainer will approach you in a second...');
   },
